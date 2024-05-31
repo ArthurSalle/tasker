@@ -1,29 +1,55 @@
 import { CircleUserRound } from "lucide-react"
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 export default function Navbar() {
   return (
     <div className="p-4 flex justify-between items-center">
       <div>
-        <Link to="/" className="text-2xl font-bold">
+        <NavLink to="/" className="text-2xl font-bold text-cyan-700">
           Tasker.
-        </Link>
+        </NavLink>
       </div>
 
       <nav className="flex gap-8 items-center">
-        <Link to="/teams" className="text-lg font-medium">
+        <NavLink
+          to="/team"
+          className={({ isActive }) =>
+            `text-lg font-semibold ${
+              isActive ? "text-cyan-700 underline underline-offset-4" : ""
+            }`
+          }
+        >
           Teams
-        </Link>
-        <Link to="/workspaces" className="text-lg font-medium">
-          Workspaces
-        </Link>
-        <Link to="/settings" className="text-lg font-medium">
-          Settings
-        </Link>
+        </NavLink>
 
-        <Link to="/profile">
+        <NavLink
+          to="/workspaces"
+          className={({ isActive }) =>
+            `text-lg font-semibold ${
+              isActive ? "text-cyan-700 underline underline-offset-4" : ""
+            }`
+          }
+        >
+          Workspaces
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `text-lg font-semibold ${
+              isActive ? "text-cyan-700 underline underline-offset-4" : ""
+            }`
+          }
+        >
+          Settings
+        </NavLink>
+
+        <NavLink
+          to="/profile"
+          className={({ isActive }) => `${isActive ? "text-cyan-700" : ""}`}
+        >
           <CircleUserRound size={24} strokeWidth={1.75} />
-        </Link>
+        </NavLink>
       </nav>
     </div>
   )

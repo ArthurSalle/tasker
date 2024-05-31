@@ -1,5 +1,9 @@
 import { Button } from "@mantine/core"
-import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom"
+import {
+  isRouteErrorResponse,
+  useNavigate,
+  useRouteError,
+} from "react-router-dom"
 
 export default function ErrorPage() {
   const error = useRouteError()
@@ -15,7 +19,7 @@ export default function ErrorPage() {
           </i>
         </p>
 
-        <Button onClick={() => navigate(-1)} color="cyan.6">
+        <Button onClick={() => navigate(-1)} className="!bg-cyan-700">
           Go back!
         </Button>
       </div>
@@ -25,7 +29,7 @@ export default function ErrorPage() {
       <div className="flex flex-col h-screen gap-4 justify-center items-center">
         <h1 className="text-3xl">Oops! Something went wrong 🫠</h1>
 
-        <Button onClick={() => navigate(-1)} color="cyan.6">
+        <Button onClick={() => navigate(-1)} className="!bg-cyan-700">
           Go back!
         </Button>
       </div>

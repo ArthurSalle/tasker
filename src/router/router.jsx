@@ -1,20 +1,20 @@
 import { createBrowserRouter } from "react-router-dom"
 import App from "../App"
-import Teams from "../pages/Teams"
-import Workspaces from "../pages/Workspaces"
-import Settings from "../pages/Settings"
-import Profile from "../pages/Profile"
-import ErrorBoundary from "../components/ErrorBoundary"
+import Team from "../features/Team/Team"
+import Workspaces from "../features/Workspaces"
+import Settings from "../features/Settings"
+import Profile from "../features/Profile"
+import ErrorPage from "../components/ErrorPage"
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorBoundary />,
+    errorElement: <ErrorPage />,
     children: [
       {
-        path: "/teams",
-        element: <Teams />,
+        path: "/team",
+        element: <Team />,
       },
       {
         path: "/workspaces",
