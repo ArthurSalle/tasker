@@ -101,7 +101,11 @@ export function MobileNavbar() {
         <Modal.Content>
           <Modal.Body className="h-full">
             <div className="flex items-center justify-between">
-              <NavLink to="/" className="text-2xl font-bold text-cyan-700">
+              <NavLink
+                to="/"
+                onClick={close}
+                className="text-2xl font-bold text-cyan-700"
+              >
                 Tasker.
               </NavLink>
               <ActionIcon variant="transparent" onClick={close}>
@@ -113,6 +117,7 @@ export function MobileNavbar() {
               <li>
                 <NavLink
                   to="/team"
+                  onClick={close}
                   className={({ isActive }) =>
                     `text-xl font-semibold ${
                       isActive
@@ -127,6 +132,7 @@ export function MobileNavbar() {
               <li>
                 <NavLink
                   to="/workspaces"
+                  onClick={close}
                   className={({ isActive }) =>
                     `text-xl font-semibold ${
                       isActive
@@ -141,6 +147,7 @@ export function MobileNavbar() {
               <li>
                 <NavLink
                   to="/settings"
+                  onClick={close}
                   className={({ isActive }) =>
                     `text-xl font-semibold ${
                       isActive
@@ -155,6 +162,7 @@ export function MobileNavbar() {
               <li>
                 <NavLink
                   to="/profile"
+                  onClick={close}
                   className={({ isActive }) =>
                     `text-xl font-semibold ${
                       isActive
@@ -165,12 +173,6 @@ export function MobileNavbar() {
                 >
                   Profile
                 </NavLink>
-                {/* <NavLink
-              to="/profile"
-              className={({ isActive }) => `${isActive ? "text-cyan-700" : ""}`}
-            >
-              <CircleUserRound size={24} strokeWidth={1.75} />
-            </NavLink> */}
               </li>
             </ul>
           </Modal.Body>
