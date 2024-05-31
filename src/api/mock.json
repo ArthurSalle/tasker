@@ -1,0 +1,195 @@
+{
+  "uuid": "0bf11770-ce2d-4f91-bbd8-024314c3de0e",
+  "lastMigration": 32,
+  "name": "Mock",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "320dd241-6a93-4d4b-b5d3-d32a943b93bd",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "create-attendee",
+      "responses": [
+        {
+          "uuid": "4ece2e6d-f7fc-4953-ba82-e1da01c48589",
+          "body": "{\n      \"id\": \"{{ 'id'}}\",\n      \"name\": \"{{body 'name'}}\",\n      \"email\": \"{{body 'email'}}\",\n      \"isActive\": {{body 'isActive'}},\n      \"avatar\": \"{{body 'avatar'}}\"\n    }",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "c7mj",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "ddc37eee-e81e-4507-bf1a-f5d81c29a8ec",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "attendees",
+      "responses": [
+        {
+          "uuid": "c1068e7b-97e8-4802-9221-ab29a476de65",
+          "body": "",
+          "latency": 1500,
+          "statusCode": 200,
+          "label": "success",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "c7mj",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "d825e27d-0aeb-42dd-81c0-5ed31f02fce7",
+          "body": "",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "error",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "2108589b-da4c-4530-9510-7ef4693547ca",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "attendees",
+      "responses": [
+        {
+          "uuid": "de34209d-6d42-41df-ab72-6d7ee996da4e",
+          "body": "{}",
+          "latency": 1000,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "c7mj",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "ddc37eee-e81e-4507-bf1a-f5d81c29a8ec"
+    },
+    {
+      "type": "route",
+      "uuid": "320dd241-6a93-4d4b-b5d3-d32a943b93bd"
+    },
+    {
+      "type": "route",
+      "uuid": "2108589b-da4c-4530-9510-7ef4693547ca"
+    }
+  ],
+  "proxyMode": true,
+  "proxyHost": "http://localhost:5173",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "9dd433be-e2cc-4cdd-a0ad-43214c615dde",
+      "id": "c7mj",
+      "name": "attendees",
+      "documentation": "",
+      "value": "[ {\n        \"id\": \"f69a9210-6eaf-4ee3-ab37-7e68eb76f5a2\",\n        \"firstname\": \"John\",\n        \"lastname\": \"Doe\",\n        \"email\": \"jdoe@gmail.com\",\n        \"avatar\": \"https://api.dicebear.com/7.x/notionists/svg?seed=Harley\",\n        \"permission\": \"Edit\",\n        \"isActive\": false\n    }]"
+    }
+  ],
+  "callbacks": []
+}
