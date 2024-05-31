@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "react-query-devtools"
+import { Analytics } from "@vercel/analytics/react"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +18,7 @@ function App() {
       <Navbar />
       <Outlet />
       <ReactQueryDevtools />
+      <Analytics debug={false} />
     </QueryClientProvider>
   )
 }
