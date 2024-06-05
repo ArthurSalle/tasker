@@ -52,7 +52,7 @@ export function DesktopNavbar() {
           to="/profile"
           className={({ isActive }) => `${isActive ? "text-cyan-700" : ""}`}
         >
-          <CircleUserRound size={24} strokeWidth={1.75} />
+          <CircleUserRound size={24} strokeWidth={1.8} />
         </NavLink>
       </div>
     </nav>
@@ -88,7 +88,6 @@ export function MobileNavbar() {
       > */}
       <Modal.Root
         opened={opened}
-        withCloseButton={false}
         fullScreen
         transitionProps={{
           transition: "fade",

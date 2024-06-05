@@ -1,19 +1,27 @@
 import { Card, CardSection, Image, Modal } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { Pen } from "lucide-react"
 import EditAttendeeModal from "./EditAttendeeModal"
 import {
+  capitalizeFirstLetter,
   getFirstLetter,
   getFullname,
   modalTitleStyles,
 } from "./helpers/helpers"
+import { Shield } from "lucide-react"
 
 export default function AttendeeCard({ attendee }) {
   const [opened, { open, close }] = useDisclosure()
 
   return (
     <>
-      <Card shadow="sm" padding="" radius="md" withBorder>
+      <Card
+        shadow="sm"
+        padding=""
+        radius="md"
+        withBorder
+        onClick={open}
+        className="cursor-pointer"
+      >
         <CardSection>
           {attendee.avatar ? (
             <Image
@@ -22,23 +30,32 @@ export default function AttendeeCard({ attendee }) {
               h={160}
             />
           ) : (
-            <span className="h-[160px] flex items-center justify-center bg-slate-300 text-4xl font-semibold text-white">
+            <span className="h-[160px] flex items-center justify-center bg-cyan-700 opacity-50 text-4xl font-semibold text-white">
               {getFirstLetter(attendee.firstname) +
                 getFirstLetter(attendee.lastname)}
             </span>
           )}
         </CardSection>
 
-        <div className="flex items-center justify-between p-2">
-          <span className="text-lg font-medium">
-            {getFullname(attendee.firstname, attendee.lastname)}
-          </span>
-          <Pen
-            size={18}
-            strokeWidth={1.75}
-            onClick={open}
-            className="cursor-pointer"
-          />
+        <div className="p-2">
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-medium">
+              {getFullname(attendee.firstname, attendee.lastname)}
+            </span>
+            {/* <Pen
+              size={18}
+              strokeWidth={1.8}
+              onClick={open}
+              className="cursor-pointer"
+            /> */}
+          </div>
+
+          <div className="flex items-center gap-1 text-gray-500">
+            <Shield size={14} strokeWidth={1.9} />
+            <span className="text-sm text-gray-500">
+              {capitalizeFirstLetter(attendee.permission)}
+            </span>
+          </div>
         </div>
       </Card>
 

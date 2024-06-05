@@ -16,9 +16,9 @@ export default function AddAttendeeCard() {
         className="cursor-pointer"
         onClick={open}
       >
-        <CardSection h={160} className="bg-slate-300">
-          <div className="h-full flex items-center justify-center text-white">
-            <PlusCircle size={50} strokeWidth={1.75} />
+        <CardSection h={160} className="bg-cyan-700 bg-opacity-20">
+          <div className="h-full flex items-center justify-center text-cyan-600">
+            <PlusCircle size={50} strokeWidth={1.8} />
           </div>
         </CardSection>
 
