@@ -73,14 +73,13 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
         padding="md"
         radius="sm"
         withBorder
-        h={300}
+        h={400}
       >
         <div className="flex items-center justify-between">
           {editMode ? (
             <form
               onSubmit={handleSubmit(mutate)}
               className="flex items-center gap-2"
-              //   onBlur={handleEdit}
             >
               <div>
                 <Input
@@ -137,7 +136,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           </Menu>
         </div>
 
-        <div className="flex items-center gap-4 p-2 h-full overflow-x-auto mt-4">
+        <div className="flex items-center gap-4 p-2 h-full overflow-x-auto">
           {isLoading
             ? "loading"
             : columns?.map((column) => {
