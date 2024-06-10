@@ -23,7 +23,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   return (
     <div
       key={column.id}
-      className="border-2 border-dashed border-cyan-300 rounded min-w-80 h-full flex flex-col overflow-y-auto bg-cyan-700 bg-opacity-10 relative"
+      className="border-2 border-dashed border-cyan-300 rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-auto bg-cyan-700 bg-opacity-10 relative"
     >
       <div className="flex items-center justify-between border-b p-2">
         <span className="text-lg font-semibold">{column.column_name}</span>
