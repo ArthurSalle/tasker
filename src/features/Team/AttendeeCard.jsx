@@ -1,13 +1,13 @@
 import { Card, CardSection, Image, Modal } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import EditAttendeeModal from "./EditAttendeeModal"
+import { getFullname } from "./helpers/helpers"
+import { Shield } from "lucide-react"
 import {
   capitalizeFirstLetter,
   getFirstLetter,
-  getFullname,
   modalTitleStyles,
-} from "./helpers/helpers"
-import { Shield } from "lucide-react"
+} from "../../utils/helpers"
 
 export default function AttendeeCard({ attendee }) {
   const [opened, { open, close }] = useDisclosure(false)

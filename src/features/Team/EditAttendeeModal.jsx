@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form"
 import { schema } from "./helpers/schema"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { deleteAttendee, editAttendee } from "../../api/attendees"
-import { capitalizeFirstLetter } from "./helpers/helpers"
+import { capitalizeFirstLetter } from "../../utils/helpers"
 
 export default function EditAttendeeModal({ attendee }) {
   const queryClient = useQueryClient()

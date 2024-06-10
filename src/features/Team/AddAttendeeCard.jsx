@@ -2,7 +2,7 @@ import { Card, CardSection, Modal } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { PlusCircle } from "lucide-react"
 import AttendeeModal from "./AddAttendeeModal"
-import { modalTitleStyles } from "./helpers/helpers"
+import { modalTitleStyles } from "../../utils/helpers"
 
 export default function AddAttendeeCard() {
   const [opened, { open, close }] = useDisclosure(false)
