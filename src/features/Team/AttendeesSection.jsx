@@ -24,7 +24,7 @@ export default function AttendeesSection() {
       ) : isError ? (
         "error"
       ) : (
-        <div className="py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div className="py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {data.map((attendee) => {
             return <AttendeeCard attendee={attendee} key={attendee.id} />
           })}

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 import App from "../App"
 import Team from "../features/Team/Team"
-import Workspaces from "../features/Workspaces"
+import Workspaces from "../features/Workspaces/Workspaces"
 import Settings from "../features/Settings"
 import Profile from "../features/Profile"
 import ErrorPage from "../components/ErrorPage"

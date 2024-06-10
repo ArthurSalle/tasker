@@ -10,17 +10,17 @@ import {
 import { Shield } from "lucide-react"
 
 export default function AttendeeCard({ attendee }) {
-  const [opened, { open, close }] = useDisclosure()
+  const [opened, { open, close }] = useDisclosure(false)
 
   return (
     <>
       <Card
         shadow="sm"
-        padding=""
         radius="md"
+        padding=""
         withBorder
         onClick={open}
-        className="cursor-pointer"
+        className="cursor-pointer transition hover:shadow-lg"
       >
         <CardSection>
           {attendee.avatar ? (

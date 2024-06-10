@@ -5,6 +5,8 @@ import { Menu } from "lucide-react"
 import { CircleUserRound } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
+const activeLinkClass = "text-cyan-700 underline underline-offset-4"
+
 export function DesktopNavbar() {
   return (
     <nav className="p-4 flex justify-between items-center">
@@ -18,9 +20,7 @@ export function DesktopNavbar() {
         <NavLink
           to="/team"
           className={({ isActive }) =>
-            `text-lg font-semibold ${
-              isActive ? "text-cyan-700 underline underline-offset-4" : ""
-            }`
+            `text-lg font-semibold ${isActive ? activeLinkClass : ""}`
           }
         >
           Team
@@ -29,9 +29,7 @@ export function DesktopNavbar() {
         <NavLink
           to="/workspaces"
           className={({ isActive }) =>
-            `text-lg font-semibold ${
-              isActive ? "text-cyan-700 underline underline-offset-4" : ""
-            }`
+            `text-lg font-semibold ${isActive ? activeLinkClass : ""}`
           }
         >
           Workspaces
@@ -40,9 +38,7 @@ export function DesktopNavbar() {
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            `text-lg font-semibold ${
-              isActive ? "text-cyan-700 underline underline-offset-4" : ""
-            }`
+            `text-lg font-semibold ${isActive ? activeLinkClass : ""}`
           }
         >
           Settings
@@ -60,7 +56,7 @@ export function DesktopNavbar() {
 }
 
 export function MobileNavbar() {
-  const [opened, { open, close }] = useDisclosure()
+  const [opened, { open, close }] = useDisclosure(false)
 
   return (
     <>
@@ -118,11 +114,7 @@ export function MobileNavbar() {
                   to="/team"
                   onClick={close}
                   className={({ isActive }) =>
-                    `text-xl font-semibold ${
-                      isActive
-                        ? "text-cyan-700 underline underline-offset-4"
-                        : ""
-                    }`
+                    `text-xl font-semibold ${isActive ? activeLinkClass : ""}`
                   }
                 >
                   Team
@@ -133,11 +125,7 @@ export function MobileNavbar() {
                   to="/workspaces"
                   onClick={close}
                   className={({ isActive }) =>
-                    `text-xl font-semibold ${
-                      isActive
-                        ? "text-cyan-700 underline underline-offset-4"
-                        : ""
-                    }`
+                    `text-xl font-semibold ${isActive ? activeLinkClass : ""}`
                   }
                 >
                   Workspaces
@@ -148,11 +136,7 @@ export function MobileNavbar() {
                   to="/settings"
                   onClick={close}
                   className={({ isActive }) =>
-                    `text-xl font-semibold ${
-                      isActive
-                        ? "text-cyan-700 underline underline-offset-4"
-                        : ""
-                    }`
+                    `text-xl font-semibold ${isActive ? activeLinkClass : ""}`
                   }
                 >
                   Settings
@@ -163,11 +147,7 @@ export function MobileNavbar() {
                   to="/profile"
                   onClick={close}
                   className={({ isActive }) =>
-                    `text-xl font-semibold ${
-                      isActive
-                        ? "text-cyan-700 underline underline-offset-4"
-                        : ""
-                    }`
+                    `text-xl font-semibold ${isActive ? activeLinkClass : ""}`
                   }
                 >
                   Profile
