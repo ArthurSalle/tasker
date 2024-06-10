@@ -47,12 +47,8 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     },
   })
 
-  //   function sleep(delay) {
-  //     return new Promise((resolve) => setTimeout(resolve, delay))
-  //   }
   const { mutate } = useMutation({
-    mutationFn: async (workspace_name) => {
-      //   await sleep(3000)
+    mutationFn: (workspace_name) => {
       return editWorkspaceName(workspace, workspace_name)
     },
     onSuccess: async (data) => {

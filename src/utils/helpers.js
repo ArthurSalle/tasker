@@ -9,3 +9,7 @@ export function capitalizeFirstLetter(word) {
 export function getFirstLetter(word) {
   return word[0].toUpperCase()
 }
+
+export function mockDelay(delay) {
+  return new Promise((resolve) => setTimeout(resolve, delay))
+}

@@ -36,3 +36,14 @@ export const editWorkspaceName = async (workspace, workspace_name) => {
 
   return data
 }
+
+export const editTicket = async (editedTicket) => {
+  const { data } = await supabase
+    .from("tickets")
+    .update(editedTicket)
+    .eq("id", editedTicket.id)
+    .select()
+    .single()
+
+  return data
+}

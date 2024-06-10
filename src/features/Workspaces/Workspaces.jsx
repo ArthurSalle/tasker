@@ -14,7 +14,6 @@ export default function Workspaces() {
     data: workspaces,
     isLoading,
     isError,
-    isFetching,
     isSuccess,
   } = useQuery({
     queryKey: ["get_workspaces"],
@@ -42,7 +41,7 @@ export default function Workspaces() {
         </Modal>
       </div>
 
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <div className="py-8 flex justify-center">
           <Loader
             size="lg"

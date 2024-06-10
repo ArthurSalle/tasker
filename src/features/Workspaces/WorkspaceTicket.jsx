@@ -1,20 +1,37 @@
-import { Card, Drawer, Text } from "@mantine/core"
+import { Card, ColorSwatch, Drawer, Text, Title } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { drawerTitleStyles } from "../../utils/helpers"
 import EditTicketDrawer from "./EditTicketDrawer"
+import { getPriorityColor } from "./helpers/helpers"
 
-export default function WorkspaceTicket({ ticket }) {
+export default function WorkspaceTicket({ ticket, workspace }) {
   const [opened, { open, close }] = useDisclosure(false)
+
   return (
     <>
       <Card padding="sm" onClick={open} className="cursor-pointer">
         <span className="absolute inset-y-0 left-0 w-2 bg-cyan-600"></span>
 
         <div className="flex flex-col gap-2">
-          <span className="text-lg font-medium">{ticket?.ticket_name}</span>
+          <Title className="text-lg font-medium" order={4} lineClamp={1}>
+            {ticket?.ticket_name}
+          </Title>
           <Text lineClamp={2} size="sm">
             {ticket?.ticket_description}
           </Text>
+          {ticket.ticket_priority ? (
+            <div className="flex items-center gap-1">
+              <ColorSwatch
+                color={getPriorityColor(ticket.ticket_priority)}
+                size={14}
+              />
+              <Text size="xs" fs="italic">
+                - {ticket?.ticket_priority}
+              </Text>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </Card>
 
@@ -28,7 +45,7 @@ export default function WorkspaceTicket({ ticket }) {
           title: drawerTitleStyles,
         }}
       >
-        <EditTicketDrawer ticket={ticket} />
+        <EditTicketDrawer ticket={ticket} workspace={workspace} />
       </Drawer>
     </>
   )

@@ -49,7 +49,11 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
               </span>
             ) : (
               filteredTickets.map((ticket) => (
-                <WorkspaceTicket ticket={ticket} key={ticket.id} />
+                <WorkspaceTicket
+                  ticket={ticket}
+                  workspace={workspace}
+                  key={ticket.id}
+                />
               ))
             )}
           </>
