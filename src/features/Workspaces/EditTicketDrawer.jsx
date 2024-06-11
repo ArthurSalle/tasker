@@ -1,13 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  Button,
-  ColorSwatch,
-  Group,
-  Input,
-  Select,
-  Text,
-  Textarea,
-} from "@mantine/core"
+import { Button, ColorSwatch, Group, Input, Select, Text, Textarea } from "@mantine/core"
 import { Controller, useForm } from "react-hook-form"
 import { ticketSchema } from "./helpers/schema"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -15,13 +7,20 @@ import { editTicket } from "../../api/workspaces"
 import { mockDelay } from "../../utils/helpers"
 import { getPriorityColor } from "./helpers/helpers"
 import { Check } from "lucide-react"
+import { invalidateTicketsQueries } from "./hooks/useGetTickets"
+import { getWorkspaceColumnsKey } from "./hooks/useGetWorkspaceColumns"
+
+const SelectOption = ({ option, checked }) => (
+  <Group flex={1} gap="xs">
+    {checked && <Check className="text-gray-500" size={15} strokeWidth={3} />}
+    <ColorSwatch color={getPriorityColor(option.label)} size={16} />
+    <Text>{option.label}</Text>
+  </Group>
+)
 
 export default function EditTicketDrawer({ ticket, workspace }) {
   const queryClient = useQueryClient()
-  const columns = queryClient.getQueryData([
-    "get_workspaces_columns",
-    workspace.id,
-  ])
+  const columns = queryClient.getQueryData([getWorkspaceColumnsKey, workspace.id])
 
   const formattedColumns = columns.map((col) => {
     return {
@@ -36,9 +35,7 @@ export default function EditTicketDrawer({ ticket, workspace }) {
       ticket_name: ticket.ticket_name,
       ticket_description: ticket.ticket_description,
       ticket_priority: ticket.ticket_priority,
-      column_id: formattedColumns.filter(
-        (col) => col.value === ticket.column_id.toString()
-      )[0]?.value,
+      column_id: formattedColumns.filter((col) => col.value === ticket.column_id.toString())[0]?.value,
     },
   })
 
@@ -54,37 +51,22 @@ export default function EditTicketDrawer({ ticket, workspace }) {
       return editTicket(finalTicket)
     },
     onSuccess() {
-      queryClient.invalidateQueries(["get_tickets"])
+      invalidateTicketsQueries(workspace.id, columns.id)
       close()
     },
   })
-
-  const renderSelectOption = ({ option, checked }) => (
-    <Group flex={1} gap="xs">
-      {checked && <Check className="text-gray-500" size={15} strokeWidth={3} />}
-      <ColorSwatch color={getPriorityColor(option.label)} size={16} />
-      <Text>{option.label}</Text>
-    </Group>
-  )
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(mutate)}>
       <div className="flex flex-col gap-4">
         <div>
-          <span className="text-end block italic text-xs text-gray-500">
-            Created by Arthur
-          </span>
-          <span className="text-end block italic text-xs text-gray-500">
-            Created 5 days ago
-          </span>
+          <span className="text-end block italic text-xs text-gray-500">Created by Arthur</span>
+          <span className="text-end block italic text-xs text-gray-500">Created 5 days ago</span>
         </div>
 
         <div>
           <Input.Wrapper label="Ticket name">
-            <Input
-              defaultValue={ticket.ticket_name}
-              {...register("ticket_name")}
-            />
+            <Input defaultValue={ticket.ticket_name} {...register("ticket_name")} />
           </Input.Wrapper>
         </div>
 
@@ -108,7 +90,7 @@ export default function EditTicketDrawer({ ticket, workspace }) {
                 label="Ticket priority"
                 data={["Low", "Critical", "High"]}
                 placeholder="No priority defined"
-                renderOption={renderSelectOption}
+                renderOption={SelectOption}
               />
             )}
           />
@@ -119,12 +101,7 @@ export default function EditTicketDrawer({ ticket, workspace }) {
             name="column_id"
             control={control}
             render={({ field }) => (
-              <Select
-                {...field}
-                label="Ticket status"
-                data={formattedColumns}
-                allowDeselect={false}
-              />
+              <Select {...field} label="Ticket status" data={formattedColumns} allowDeselect={false} />
             )}
           />
         </div>

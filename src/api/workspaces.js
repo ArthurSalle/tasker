@@ -21,7 +21,7 @@ export const getWorkspacesTickets = async (workspace_id, column_id) => {
   const { data } = await supabase
     .from("tickets")
     .select()
-    .match({ workspace_id: workspace_id, column_id: column_id })
+    .match({ workspace_id, column_id })
 
   return data
 }
@@ -37,11 +37,11 @@ export const editWorkspaceName = async (workspace, workspace_name) => {
   return data
 }
 
-export const editTicket = async (editedTicket) => {
+export const editTicket = async (edited_ticket) => {
   const { data } = await supabase
     .from("tickets")
-    .update(editedTicket)
-    .eq("id", editedTicket.id)
+    .update(edited_ticket)
+    .eq("id", edited_ticket.id)
     .select()
     .single()
 

@@ -1,19 +1,18 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { postAttendee } from "../../api/attendees"
 import { Button, Input, Select } from "@mantine/core"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { schema } from "./helpers/schema"
+import { attendeeSchema } from "./helpers/schema"
+import { invalidateAttendeesQueries } from "./hooks/useGetAttendees"
 
 export default function AttendeeModal() {
-  const queryClient = useQueryClient()
-
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema) })
+  } = useForm({ resolver: zodResolver(attendeeSchema) })
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (newAttendee) => {
@@ -25,10 +24,7 @@ export default function AttendeeModal() {
       await postAttendee(attendee)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
+      invalidateAttendeesQueries()
     },
   })
 
@@ -38,25 +34,17 @@ export default function AttendeeModal() {
         <div>
           <label>Firstname</label>
           <Input type="text" placeholder="John" {...register("firstname")} />
-          <span className="text-xs text-red-500">
-            {errors?.firstname?.message}
-          </span>
+          <span className="text-xs text-red-500">{errors?.firstname?.message}</span>
         </div>
         <div>
           <label>Lastname</label>
           <Input type="text" placeholder="Doe" {...register("lastname")} />
-          <span className="text-xs text-red-500">
-            {errors?.lastname?.message}
-          </span>
+          <span className="text-xs text-red-500">{errors?.lastname?.message}</span>
         </div>
 
         <div>
           <label>Email</label>
-          <Input
-            type="text"
-            placeholder="jdoe@gmail.com"
-            {...register("email")}
-          />
+          <Input type="text" placeholder="jdoe@gmail.com" {...register("email")} />
           <span className="text-xs text-red-500">{errors?.email?.message}</span>
         </div>
 
@@ -67,9 +55,7 @@ export default function AttendeeModal() {
             placeholder="https://api.dicebear.com/7.x/notionists/svg?seed=Harley"
             {...register("avatar")}
           />
-          <span className="text-sm italic text-gray-400">
-            https://api.dicebear.com/7.x/notionists/svg?seed=Harley
-          </span>
+          <span className="text-sm italic text-gray-400">https://api.dicebear.com/7.x/notionists/svg?seed=Harley</span>
           <span className="text-xs text-red-500">{errors?.url?.message}</span>
         </div>
 
@@ -88,17 +74,11 @@ export default function AttendeeModal() {
               />
             )}
           />
-          <span className="text-xs text-red-500">
-            {errors?.permission?.message}
-          </span>
+          <span className="text-xs text-red-500">{errors?.permission?.message}</span>
         </div>
 
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="mt-4 !bg-cyan-700"
-            loading={isPending}
-          >
+          <Button type="submit" className="mt-4 !bg-cyan-700" loading={isPending}>
             Add member
           </Button>
         </div>

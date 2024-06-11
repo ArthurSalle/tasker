@@ -56,7 +56,7 @@ export function DesktopNavbar() {
 }
 
 export function MobileNavbar() {
-  const [opened, { open, close }] = useDisclosure(false)
+  const [isOpen, { open, close }] = useDisclosure(false)
 
   return (
     <>
@@ -70,20 +70,8 @@ export function MobileNavbar() {
         </ActionIcon>
       </nav>
 
-      {/* <Modal
-        opened={opened}
-        onClose={close}
-        withCloseButton={false}
-        fullScreen
-        transitionProps={{
-          transition: "fade",
-          duration: 300,
-          timingFunction: "linear",
-        }}
-        radius={0}
-      > */}
       <Modal.Root
-        opened={opened}
+        opened={isOpen}
         fullScreen
         transitionProps={{
           transition: "fade",
@@ -157,7 +145,6 @@ export function MobileNavbar() {
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
-      {/* </Modal> */}
     </>
   )
 }

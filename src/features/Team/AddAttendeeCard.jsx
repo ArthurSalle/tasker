@@ -5,17 +5,11 @@ import AttendeeModal from "./AddAttendeeModal"
 import { modalTitleStyles } from "../../utils/helpers"
 
 export default function AddAttendeeCard() {
-  const [opened, { open, close }] = useDisclosure(false)
+  const [isOpen, { open, close }] = useDisclosure(false)
 
   return (
     <>
-      <Card
-        shadow="sm"
-        radius="md"
-        withBorder
-        className="cursor-pointer"
-        onClick={open}
-      >
+      <Card shadow="sm" radius="md" withBorder className="cursor-pointer" onClick={open}>
         <CardSection h={160} className="bg-cyan-700 bg-opacity-20">
           <div className="h-full flex items-center justify-center text-cyan-600">
             <PlusCircle size={50} strokeWidth={1.8} />
@@ -28,7 +22,7 @@ export default function AddAttendeeCard() {
       </Card>
 
       <Modal
-        opened={opened}
+        opened={isOpen}
         onClose={close}
         title="Add a new member in your Team"
         centered
