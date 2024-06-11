@@ -1,24 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
 import { Button, Loader, Modal } from "@mantine/core"
-import { getWorkspaces } from "../../api/workspaces"
 import WorkspaceCard from "./WorkspaceCard"
 import { Plus } from "lucide-react"
 import AddWorkspaceModal from "./AddWorkspaceModal"
 import { useDisclosure } from "@mantine/hooks"
 import { modalTitleStyles } from "../../utils/helpers"
+import { useGetWorkspaces } from "./hooks/useGetWorkspaces"
 
 export default function Workspaces() {
-  const [opened, { open, close }] = useDisclosure(false)
+  const [isOpen, { open, close }] = useDisclosure(false)
 
-  const {
-    data: workspaces,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useQuery({
-    queryKey: ["get_workspaces"],
-    queryFn: () => getWorkspaces(),
-  })
+  const { data: workspaces, isLoading, isError } = useGetWorkspaces()
 
   return (
     <div className="p-4 md:p-8">
@@ -29,7 +20,7 @@ export default function Workspaces() {
         </Button>
 
         <Modal
-          opened={opened}
+          opened={isOpen}
           onClose={close}
           centered
           title="Add a new workspace"
@@ -53,13 +44,7 @@ export default function Workspaces() {
       ) : isError ? (
         "error"
       ) : (
-        workspaces?.map((workspace) => (
-          <WorkspaceCard
-            workspace={workspace}
-            isSuccess={isSuccess}
-            key={workspace.id}
-          />
-        ))
+        workspaces?.map((workspace) => <WorkspaceCard workspace={workspace} key={workspace.id} />)
       )}
     </div>
   )

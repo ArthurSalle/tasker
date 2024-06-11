@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ActionIcon, Card, Input, Menu } from "@mantine/core"
 import { EllipsisVertical } from "lucide-react"
 import { Trash2 } from "lucide-react"
-import { editWorkspaceName, getWorkspacesColumns } from "../../api/workspaces"
+import { editWorkspaceName } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { Pencil } from "lucide-react"
 import { useState } from "react"
@@ -10,21 +10,15 @@ import { Check } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { getWorkspacesKeys } from "./hooks/useGetWorkspaces"
+import { useGetWorkspaceColumns } from "./hooks/useGetWorkspaceColumns"
 
-export default function WorkspaceCard({ workspace, isSuccess }) {
+export default function WorkspaceCard({ workspace }) {
   const queryClient = useQueryClient()
 
-  const {
-    data: columns,
-    isLoading,
-    isSuccess: isColumnSuccess,
-  } = useQuery({
-    queryKey: ["get_workspaces_columns", workspace.id],
-    queryFn: () => getWorkspacesColumns(workspace.id),
-    enabled: isSuccess,
-  })
+  const { data: columns, isLoading } = useGetWorkspaceColumns(workspace.id)
 
-  const [editMode, setEditMode] = useState(false)
+  const [isEditMode, setEditMode] = useState(false)
 
   function handleEdit() {
     setEditMode((prev) => !prev)
@@ -52,7 +46,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
       return editWorkspaceName(workspace, workspace_name)
     },
     onSuccess: async (data) => {
-      await queryClient.setQueryData(["get_workspaces"], (oldData) => {
+      await queryClient.setQueryData(getWorkspacesKeys, (oldData) => {
         return oldData.map((item) => {
           return item.id === data.id ? data : item
         })
@@ -63,20 +57,10 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
 
   return (
     <div className="py-8 flex flex-col gap-4">
-      <Card
-        key={workspace.id}
-        shadow="sm"
-        padding="md"
-        radius="sm"
-        withBorder
-        h={400}
-      >
+      <Card key={workspace.id} shadow="sm" padding="md" radius="sm" withBorder h={400}>
         <div className="flex items-center justify-between">
-          {editMode ? (
-            <form
-              onSubmit={handleSubmit(mutate)}
-              className="flex items-center gap-2"
-            >
+          {isEditMode ? (
+            <form onSubmit={handleSubmit(mutate)} className="flex items-center gap-2">
               <div>
                 <Input
                   type="text"
@@ -89,9 +73,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                   }}
                   {...register("workspace_name")}
                 />
-                <span className="text-xs text-red-500">
-                  {errors?.workspace_name?.message}
-                </span>
+                <span className="text-xs text-red-500">{errors?.workspace_name?.message}</span>
               </div>
 
               <ActionIcon type="submit">
@@ -116,16 +98,10 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<Pencil size={16} />}
-                onClick={handleEdit}
-              >
+              <Menu.Item leftSection={<Pencil size={16} />} onClick={handleEdit}>
                 <span>Edit name</span>
               </Menu.Item>
-              <Menu.Item
-                leftSection={<Trash2 size={16} />}
-                onClick={() => console.log(workspace)}
-              >
+              <Menu.Item leftSection={<Trash2 size={16} />} onClick={() => console.log(workspace)}>
                 <span>Delete workspace</span>
               </Menu.Item>
             </Menu.Dropdown>
@@ -136,14 +112,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           {isLoading
             ? "loading"
             : columns?.map((column) => {
-                return (
-                  <WorkspaceColumns
-                    column={column}
-                    key={column.id}
-                    workspace={workspace}
-                    isSuccess={isColumnSuccess}
-                  />
-                )
+                return <WorkspaceColumns column={column} key={column.id} workspace={workspace} />
               })}
         </div>
       </Card>

@@ -1,21 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Select } from "@mantine/core"
 import { Controller, useForm } from "react-hook-form"
-import { schema } from "./helpers/schema"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { attendeeSchema } from "./helpers/schema"
+import { useMutation } from "@tanstack/react-query"
 import { deleteAttendee, editAttendee } from "../../api/attendees"
 import { capitalizeFirstLetter } from "../../utils/helpers"
+import { invalidateAttendeesQueries } from "./hooks/useGetAttendees"
 
 export default function EditAttendeeModal({ attendee }) {
-  const queryClient = useQueryClient()
-
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(attendeeSchema),
     defaultValues: {
       firstname: capitalizeFirstLetter(attendee.firstname),
       lastname: capitalizeFirstLetter(attendee.lastname),
@@ -31,10 +30,7 @@ export default function EditAttendeeModal({ attendee }) {
       await editAttendee(finaleAttendee)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
+      invalidateAttendeesQueries()
     },
   })
 
@@ -43,10 +39,7 @@ export default function EditAttendeeModal({ attendee }) {
       await deleteAttendee(attendee)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
+      invalidateAttendeesQueries()
     },
   })
 
@@ -55,17 +48,13 @@ export default function EditAttendeeModal({ attendee }) {
       <div>
         <label>Firstname</label>
         <Input type="text" {...register("firstname")} />
-        <span className="text-xs text-red-500">
-          {errors?.firstname?.message}
-        </span>
+        <span className="text-xs text-red-500">{errors?.firstname?.message}</span>
       </div>
 
       <div>
         <label>Lastname</label>
         <Input type="text" {...register("lastname")} />
-        <span className="text-xs text-red-500">
-          {errors?.lastname?.message}
-        </span>
+        <span className="text-xs text-red-500">{errors?.lastname?.message}</span>
       </div>
 
       <div>
@@ -84,26 +73,14 @@ export default function EditAttendeeModal({ attendee }) {
           name="permission"
           control={control}
           render={({ field }) => (
-            <Select
-              {...field}
-              data={["Read", "Edit", "Write"]}
-              placeholder="Choose a value"
-              allowDeselect={false}
-            />
+            <Select {...field} data={["Read", "Edit", "Write"]} placeholder="Choose a value" allowDeselect={false} />
           )}
         />
-        <span className="text-xs text-red-500">
-          {errors?.permission?.message}
-        </span>
+        <span className="text-xs text-red-500">{errors?.permission?.message}</span>
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button
-          type="button"
-          className="mt-4 !bg-red-600"
-          onClick={mutateDelete}
-          loading={isDeleting}
-        >
+        <Button type="button" className="mt-4 !bg-red-600" onClick={mutateDelete} loading={isDeleting}>
           Delete member
         </Button>
         <Button type="submit" className="mt-4 !bg-cyan-700" loading={isPending}>

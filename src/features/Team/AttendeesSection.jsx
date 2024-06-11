@@ -1,14 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
 import AttendeeCard from "./AttendeeCard"
-import { getAttendees } from "../../api/attendees"
 import AddAttendeeCard from "./AddAttendeeCard"
 import { Loader } from "@mantine/core"
+import { useGetAttendees } from "./hooks/useGetAttendees"
 
 export default function AttendeesSection() {
-  const { data, isLoading, isError, isFetching } = useQuery({
-    queryKey: ["get_attendees"],
-    queryFn: () => getAttendees(),
-  })
+  const { data, isLoading, isError, isFetching } = useGetAttendees()
 
   return (
     <>
