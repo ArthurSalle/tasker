@@ -7,7 +7,7 @@ import { editTicket } from "../../api/workspaces"
 import { mockDelay } from "../../utils/helpers"
 import { getPriorityColor } from "./helpers/helpers"
 import { Check } from "lucide-react"
-import { getTicketsKey } from "./hooks/useGetTickets"
+import { invalidateTicketsQueries } from "./hooks/useGetTickets"
 import { getWorkspaceColumnsKey } from "./hooks/useGetWorkspaceColumns"
 
 const SelectOption = ({ option, checked }) => (
@@ -51,7 +51,7 @@ export default function EditTicketDrawer({ ticket, workspace }) {
       return editTicket(finalTicket)
     },
     onSuccess() {
-      queryClient.invalidateQueries([getTicketsKey, workspace.id, columns.id])
+      invalidateTicketsQueries(workspace.id, columns.id)
       close()
     },
   })
