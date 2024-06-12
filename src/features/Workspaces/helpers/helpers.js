@@ -1,12 +1,12 @@
 export function getPriorityColor(priority) {
   switch (priority) {
     case "Low":
-      return "green"
+      return "bg-green-500"
     case "Critical":
-      return "orange"
+      return "bg-orange-400"
     case "High":
-      return "red"
+      return "bg-red-500"
     default:
-      return "gray"
+      return "bg-gray-400"
   }
 }

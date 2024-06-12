@@ -1,5 +1,6 @@
-export const modalTitleStyles = "!text-xl !font-medium"
+import TimeAgo from "javascript-time-ago"
 
+export const modalTitleStyles = "!text-xl !font-medium"
 export const drawerTitleStyles = "!text-2xl !font-semibold"
 
 export function capitalizeFirstLetter(word) {
@@ -12,4 +13,9 @@ export function getFirstLetter(word) {
 
 export function mockDelay(delay) {
   return new Promise((resolve) => setTimeout(resolve, delay))
+}
+
+export function formatCreationDate(date) {
+  const timeAgo = new TimeAgo("en-US")
+  return timeAgo.format(new Date(date))
 }

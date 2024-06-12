@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "react-query-devtools"
 import { Analytics } from "@vercel/analytics/react"
 import { useMediaQuery } from "@mantine/hooks"
+import TimeAgo from "javascript-time-ago"
+import en from "javascript-time-ago/locale/en"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,6 +14,8 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+TimeAgo.addDefaultLocale(en)
 
 function App() {
   const isMobile = useMediaQuery("(max-width: 768px)")

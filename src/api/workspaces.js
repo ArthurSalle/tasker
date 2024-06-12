@@ -47,3 +47,9 @@ export const editTicket = async (editedTicket) => {
 
   return data
 }
+
+export const deleteTicket = async (ticketId) => {
+  const { data } = await supabase.from("tickets").delete().eq("id", ticketId)
+
+  return data
+}
