@@ -1,11 +1,12 @@
-import { ActionIcon, Modal } from "@mantine/core"
+import { ActionIcon, Drawer } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useQuery } from "@tanstack/react-query"
 import { PlusCircle } from "lucide-react"
 import { Pencil } from "lucide-react"
 import { getWorkspacesTickets } from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
-import { modalTitleStyles } from "../../utils/helpers"
+import { drawerTitleStyles } from "../../utils/helpers"
+import { CreateTicketDrawer } from "./CreateTicketDrawer"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   const [opened, { open, close }] = useDisclosure(false)
@@ -29,7 +30,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         <span className="text-lg font-semibold">{column.column_name}</span>
 
         <div className="flex items-center gap-2">
-          <ActionIcon variant="transparent">
+          <ActionIcon variant="transparent" disabled>
             <Pencil size={18} />
           </ActionIcon>
           <ActionIcon variant="transparent" onClick={open}>
@@ -60,24 +61,22 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         )}
       </div>
 
-      {/* <div className="p-2 sticky inset-x-0 bottom-0">
-        <Button variant="default" fullWidth onClick={open}>
-          <PlusCircle size={20} className="cursor-pointer" />
-        </Button>
-      </div> */}
-
-      <Modal
+      <Drawer
         opened={opened}
         onClose={close}
-        centered
         title="Create a new ticket"
+        size={"33%"}
+        position="right"
         classNames={{
-          title: modalTitleStyles,
+          title: drawerTitleStyles,
         }}
       >
-        <span>{column.column_name}</span>
-        <span>{workspace.name}</span>
-      </Modal>
+        <CreateTicketDrawer
+          workspace={workspace}
+          column={column}
+          close={close}
+        />
+      </Drawer>
     </div>
   )
 }

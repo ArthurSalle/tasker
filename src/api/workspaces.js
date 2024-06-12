@@ -53,3 +53,12 @@ export const deleteTicket = async (ticketId) => {
 
   return data
 }
+
+export const createTicket = async (ticket) => {
+  const { data } = await supabase
+    .from("tickets")
+    .insert(ticket)
+    .select()
+    .single()
+  return data
+}
