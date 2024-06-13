@@ -75,10 +75,10 @@ export const CreateTicketDrawer = ({ workspace, column, close }) => {
       </div>
 
       <div className="self-end flex items-center gap-4">
-        <Button variant="outline" onClick={close}>
+        <Button variant="light" color="#000" onClick={close}>
           Cancel
         </Button>
-        <Button type="submit" loading={isPending}>
+        <Button variant="default" type="submit" loading={isPending}>
           Create ticket
         </Button>
       </div>

@@ -24,7 +24,12 @@ export default function Workspaces() {
     <div className="p-4 md:p-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-medium">Manage your workspaces</h2>
-        <Button rightSection={<Plus size={18} />} onClick={open} disabled>
+        <Button
+          rightSection={<Plus size={18} />}
+          onClick={open}
+          variant="default"
+          disabled
+        >
           Add a workspace
         </Button>
 

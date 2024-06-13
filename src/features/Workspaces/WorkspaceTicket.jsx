@@ -1,6 +1,6 @@
 import { Card, Drawer, Text, Title } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { drawerTitleStyles } from "../../utils/helpers"
+import { capitalizeFirstLetter, drawerTitleStyles } from "../../utils/helpers"
 import EditTicketDrawer from "./EditTicketDrawer"
 import { getPriorityColor } from "./helpers/helpers"
 
@@ -17,11 +17,11 @@ export default function WorkspaceTicket({ ticket, workspace }) {
         ></span>
 
         <div className="flex flex-col flex-grow gap-1">
-          <Title className="" order={5} lineClamp={1}>
-            {ticket?.ticket_name}
+          <Title className="" order={6} lineClamp={1}>
+            {capitalizeFirstLetter(ticket?.ticket_name)}
           </Title>
           <Text lineClamp={1} size="xs">
-            {ticket?.ticket_description}
+            {capitalizeFirstLetter(ticket?.ticket_description)}
           </Text>
         </div>
       </Card>

@@ -14,10 +14,11 @@ import {
 } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { useState } from "react"
-import { Check, Pencil, Trash2, EllipsisVertical, Plus } from "lucide-react"
+import { Check, Pencil, Trash2, EllipsisVertical, Columns } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { capitalizeFirstLetter } from "../../utils/helpers"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
@@ -117,7 +118,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
             <Input
               readOnly
               className="font-semibold border-b border-transparent"
-              value={workspace.workspace_name}
+              value={capitalizeFirstLetter(workspace.workspace_name)}
               variant="unstyled"
               styles={{
                 wrapper: { "--input-fz": "20px" },
@@ -131,13 +132,24 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
             </Menu.Target>
 
             <Menu.Dropdown>
+              <Menu.Label>Column</Menu.Label>
+              <Menu.Item
+                leftSection={<Columns size={16} />}
+                loading={isPending}
+                onClick={createColumn}
+              >
+                Add column
+              </Menu.Item>
+
+              <Menu.Divider />
+              <Menu.Label>Workspace</Menu.Label>
               <Menu.Item
                 leftSection={<Pencil size={16} />}
                 onClick={handleEdit}
               >
                 <span>Edit name</span>
               </Menu.Item>
-              <Menu.Item leftSection={<Trash2 size={16} />}>
+              <Menu.Item leftSection={<Trash2 size={16} />} color="red">
                 <span>Delete workspace</span>
               </Menu.Item>
             </Menu.Dropdown>
@@ -170,15 +182,6 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                     />
                   )
                 })}
-                <ActionIcon
-                  size="lg"
-                  color="#f3f4f6"
-                  autoContrast
-                  loading={isPending}
-                  onClick={createColumn}
-                >
-                  <Plus size={28} strokeWidth={1.8} />
-                </ActionIcon>
               </div>
             </ScrollArea>
           )}

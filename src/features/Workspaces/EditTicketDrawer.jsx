@@ -146,13 +146,14 @@ export default function EditTicketDrawer({ ticket, workspace, close }) {
 
       <div className="self-end flex items-center gap-4">
         <Button
-          className="!bg-red-600"
+          variant="light"
+          color="red"
           onClick={deleteMutation}
           loading={isDeleting}
         >
           Delete ticket
         </Button>
-        <Button type="submit" loading={isPending}>
+        <Button type="submit" variant="default" loading={isPending}>
           Edit ticket
         </Button>
       </div>

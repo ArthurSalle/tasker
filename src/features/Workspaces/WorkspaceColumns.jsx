@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Pencil, Plus, EllipsisVertical, Trash2 } from "lucide-react"
 import { getWorkspacesTickets } from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
-import { drawerTitleStyles } from "../../utils/helpers"
+import { capitalizeFirstLetter, drawerTitleStyles } from "../../utils/helpers"
 import { CreateTicketDrawer } from "./CreateTicketDrawer"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
@@ -23,7 +23,9 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         className="border-2  rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-gray-100 relative"
       >
         <div className="flex items-center justify-between border-b p-2">
-          <span className="text-lg font-semibold">{column.column_name}</span>
+          <span className="text-lg font-semibold">
+            {capitalizeFirstLetter(column.column_name)}
+          </span>
 
           <div className="flex items-center gap-2">
             <Menu position="bottom-end">
@@ -35,7 +37,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
                 <Menu.Item leftSection={<Pencil size={16} />}>
                   <span>Edit name</span>
                 </Menu.Item>
-                <Menu.Item leftSection={<Trash2 size={16} />}>
+                <Menu.Item leftSection={<Trash2 size={16} />} color="red">
                   <span>Delete column</span>
                 </Menu.Item>
               </Menu.Dropdown>
@@ -72,7 +74,13 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
           </div>
         </ScrollAreaAutosize>
 
-        <Button radius={0} variant="transparent" fullWidth onClick={open}>
+        <Button
+          radius={0}
+          variant="transparent"
+          color="#000"
+          fullWidth
+          onClick={open}
+        >
           <Plus strokeWidth={1.8} />
         </Button>
       </div>
