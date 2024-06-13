@@ -78,11 +78,9 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
           </div>
         </ScrollAreaAutosize>
 
-        <div>
-          <Button radius={0} variant="transparent" fullWidth onClick={open}>
-            <Plus strokeWidth={1.8} />
-          </Button>
-        </div>
+        <Button radius={0} variant="transparent" fullWidth onClick={open}>
+          <Plus strokeWidth={1.8} />
+        </Button>
       </div>
 
       <Drawer

@@ -1,8 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ActionIcon, Card, Input, Menu, ScrollArea } from "@mantine/core"
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Input,
+  Menu,
+  ScrollArea,
+} from "@mantine/core"
 import { EllipsisVertical } from "lucide-react"
 import { Trash2 } from "lucide-react"
-import { editWorkspaceName, getWorkspacesColumns } from "../../api/workspaces"
+import {
+  createWorkspaceColumn,
+  editWorkspaceName,
+  getWorkspacesColumns,
+} from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { Pencil } from "lucide-react"
 import { useState } from "react"
@@ -62,6 +73,21 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     },
   })
 
+  const newColumnTemplate = {
+    column_name: "New column",
+    workspace_id: workspace.id,
+  }
+  const { mutate: createColumn } = useMutation({
+    mutationFn: () => {
+      return createWorkspaceColumn(newColumnTemplate)
+    },
+    onSuccess: async (data) => {
+      await queryClient.setQueryData(
+        ["get_workspaces_columns", workspace.id],
+        (oldData) => [...oldData, data]
+      )
+    },
+  })
   return (
     <div className="py-8 flex flex-col gap-4">
       <Card
@@ -83,7 +109,6 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                   type="text"
                   variant="unstyled"
                   className="border-b font-semibold p-0"
-                  defaultValue={workspace}
                   autoFocus
                   styles={{
                     wrapper: { "--input-fz": "20px" },
@@ -123,10 +148,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
               >
                 <span>Edit name</span>
               </Menu.Item>
-              <Menu.Item
-                leftSection={<Trash2 size={16} />}
-                onClick={() => console.log(workspace)}
-              >
+              <Menu.Item leftSection={<Trash2 size={16} />}>
                 <span>Delete workspace</span>
               </Menu.Item>
             </Menu.Dropdown>
@@ -153,10 +175,17 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                   )
                 })}
 
-            <div className="p-3 flex items-center border-2 border-dashed border-cyan-300 rounded bg-cyan-700 bg-opacity-10 cursor-pointer">
-              <ActionIcon variant="transparent" disabled>
-                <CirclePlus size={30} strokeWidth={1.8} />
-              </ActionIcon>
+            <div
+              className=" flex items-center border-2 border-dashed border-cyan-300 rounded bg-cyan-700 bg-opacity-10 cursor-pointer"
+              onClick={createColumn}
+            >
+              <Button
+                variant="transparent"
+                className="!h-full"
+                size="compact-md"
+              >
+                <CirclePlus size={28} strokeWidth={1.8} />
+              </Button>
             </div>
           </div>
         </ScrollArea>

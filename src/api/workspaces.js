@@ -17,11 +17,21 @@ export const getWorkspacesColumns = async (workspace_id) => {
   return data
 }
 
+export const createWorkspaceColumn = async (column) => {
+  const { data } = await supabase
+    .from("workspaces_columns")
+    .insert(column)
+    .select()
+    .single()
+  return data
+}
+
 export const getWorkspacesTickets = async (workspace_id, column_id) => {
   const { data } = await supabase
     .from("tickets")
     .select()
     .match({ workspace_id: workspace_id, column_id: column_id })
+    .order("created_at", { ascending: true })
 
   return data
 }
