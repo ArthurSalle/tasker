@@ -8,20 +8,17 @@ import {
   ScrollArea,
 } from "@mantine/core"
 import { EllipsisVertical } from "lucide-react"
-import { Trash2 } from "lucide-react"
 import {
   createWorkspaceColumn,
   editWorkspaceName,
   getWorkspacesColumns,
 } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
-import { Pencil } from "lucide-react"
 import { useState } from "react"
-import { Check } from "lucide-react"
+import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { CirclePlus } from "lucide-react"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
@@ -77,7 +74,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     column_name: "New column",
     workspace_id: workspace.id,
   }
-  const { mutate: createColumn } = useMutation({
+  const { mutate: createColumn, isPending } = useMutation({
     mutationFn: () => {
       return createWorkspaceColumn(newColumnTemplate)
     },
@@ -183,6 +180,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                 variant="transparent"
                 className="!h-full"
                 size="compact-md"
+                loading={isPending}
               >
                 <CirclePlus size={28} strokeWidth={1.8} />
               </Button>
