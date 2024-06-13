@@ -13,6 +13,7 @@ export const getWorkspacesColumns = async (workspace_id) => {
     .from("workspaces_columns")
     .select()
     .eq("workspace_id", workspace_id)
+    .order("created_at", { ascending: true })
 
   return data
 }
@@ -33,7 +34,7 @@ export const getWorkspacesTickets = async (workspace_id, column_id) => {
     .match({ workspace_id: workspace_id, column_id: column_id })
     .order("created_at", { ascending: true })
 
-  return data
+  return data?.filter((ticket) => ticket.column_id === column_id)
 }
 
 export const editWorkspaceName = async (workspace, workspace_name) => {

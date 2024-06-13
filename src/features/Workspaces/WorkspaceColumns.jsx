@@ -1,13 +1,11 @@
 import { Button, Drawer, Loader, Menu, ScrollAreaAutosize } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useQuery } from "@tanstack/react-query"
-import { Pencil, Plus } from "lucide-react"
+import { Pencil, Plus, EllipsisVertical, Trash2 } from "lucide-react"
 import { getWorkspacesTickets } from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
 import { drawerTitleStyles } from "../../utils/helpers"
 import { CreateTicketDrawer } from "./CreateTicketDrawer"
-import { EllipsisVertical } from "lucide-react"
-import { Trash2 } from "lucide-react"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   const [opened, { open, close }] = useDisclosure(false)
@@ -18,15 +16,11 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
     enabled: isSuccess,
   })
 
-  const filteredTickets = tickets?.filter(
-    (ticket) => ticket.column_id === column.id
-  )
-
   return (
     <>
       <div
         key={column.id}
-        className="border-2 border-dashed border-cyan-300 rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-cyan-700 bg-opacity-10 relative"
+        className="border-2  rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-gray-100 relative"
       >
         <div className="flex items-center justify-between border-b p-2">
           <span className="text-lg font-semibold">{column.column_name}</span>
@@ -53,10 +47,10 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
           offsetScrollbars
           scrollbarSize={6}
           scrollHideDelay={500}
-          className="pr-0.5 h-full"
+          className="pr-0.5"
           h={250}
         >
-          <div className="pl-2 pr-0.5 flex flex-col gap-2">
+          <div className="pt-2 pl-2 pr-0.5 flex flex-col gap-2">
             {isLoading ? (
               <div className="mt-4 flex justify-center">
                 <Loader
@@ -67,7 +61,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
                 />
               </div>
             ) : (
-              filteredTickets?.map((ticket) => (
+              tickets?.map((ticket) => (
                 <WorkspaceTicket
                   ticket={ticket}
                   workspace={workspace}

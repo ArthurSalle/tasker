@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   ActionIcon,
-  Button,
   Card,
   Input,
+  Loader,
   Menu,
   ScrollArea,
 } from "@mantine/core"
-import { EllipsisVertical } from "lucide-react"
 import {
   createWorkspaceColumn,
   editWorkspaceName,
@@ -15,7 +14,7 @@ import {
 } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { useState } from "react"
-import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react"
+import { Check, Pencil, Trash2, EllipsisVertical, Plus } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -87,14 +86,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
   })
   return (
     <div className="py-8 flex flex-col gap-4">
-      <Card
-        key={workspace.id}
-        shadow="sm"
-        padding="md"
-        radius="sm"
-        withBorder
-        h={450}
-      >
+      <Card key={workspace.id} shadow="sm" padding="md" radius="sm" withBorder>
         <div className="flex items-center justify-between">
           {editMode ? (
             <form
@@ -152,16 +144,23 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           </Menu>
         </div>
 
-        <ScrollArea
-          scrollbars="x"
-          offsetScrollbars
-          scrollbarSize={6}
-          scrollHideDelay={500}
-        >
-          <div className="flex gap-4 p-2 h-full overflow-x-auto">
-            {isLoading
-              ? "loading"
-              : columns?.map((column) => {
+        <div className={isLoading ? "flex justify-center" : ""}>
+          {isLoading ? (
+            <Loader
+              size="sm"
+              styles={{
+                root: { "--loader-color": "#0e7490" },
+              }}
+            />
+          ) : (
+            <ScrollArea
+              scrollbars="x"
+              offsetScrollbars
+              scrollbarSize={6}
+              scrollHideDelay={500}
+            >
+              <div className="flex gap-4 p-2 overflow-x-auto">
+                {columns?.map((column) => {
                   return (
                     <WorkspaceColumns
                       column={column}
@@ -171,22 +170,19 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                     />
                   )
                 })}
-
-            <div
-              className=" flex items-center border-2 border-dashed border-cyan-300 rounded bg-cyan-700 bg-opacity-10 cursor-pointer"
-              onClick={createColumn}
-            >
-              <Button
-                variant="transparent"
-                className="!h-full"
-                size="compact-md"
-                loading={isPending}
-              >
-                <CirclePlus size={28} strokeWidth={1.8} />
-              </Button>
-            </div>
-          </div>
-        </ScrollArea>
+                <ActionIcon
+                  size="lg"
+                  color="#f3f4f6"
+                  autoContrast
+                  loading={isPending}
+                  onClick={createColumn}
+                >
+                  <Plus size={28} strokeWidth={1.8} />
+                </ActionIcon>
+              </div>
+            </ScrollArea>
+          )}
+        </div>
       </Card>
     </div>
   )
