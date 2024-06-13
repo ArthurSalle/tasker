@@ -1,12 +1,13 @@
-import { ActionIcon, Drawer } from "@mantine/core"
+import { Button, Drawer, Loader, Menu, ScrollAreaAutosize } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useQuery } from "@tanstack/react-query"
-import { PlusCircle } from "lucide-react"
-import { Pencil } from "lucide-react"
+import { Pencil, Plus } from "lucide-react"
 import { getWorkspacesTickets } from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
 import { drawerTitleStyles } from "../../utils/helpers"
 import { CreateTicketDrawer } from "./CreateTicketDrawer"
+import { EllipsisVertical } from "lucide-react"
+import { Trash2 } from "lucide-react"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   const [opened, { open, close }] = useDisclosure(false)
@@ -22,34 +23,51 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   )
 
   return (
-    <div
-      key={column.id}
-      className="border-2 border-dashed border-cyan-300 rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-auto bg-cyan-700 bg-opacity-10 relative"
-    >
-      <div className="flex items-center justify-between border-b p-2">
-        <span className="text-lg font-semibold">{column.column_name}</span>
+    <>
+      <div
+        key={column.id}
+        className="border-2 border-dashed border-cyan-300 rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-cyan-700 bg-opacity-10 relative"
+      >
+        <div className="flex items-center justify-between border-b p-2">
+          <span className="text-lg font-semibold">{column.column_name}</span>
 
-        <div className="flex items-center gap-2">
-          <ActionIcon variant="transparent" disabled>
-            <Pencil size={18} />
-          </ActionIcon>
-          <ActionIcon variant="transparent" onClick={open}>
-            <PlusCircle size={18} />
-          </ActionIcon>
+          <div className="flex items-center gap-2">
+            <Menu position="bottom-end">
+              <Menu.Target>
+                <EllipsisVertical className="cursor-pointer" size={18} />
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item leftSection={<Pencil size={16} />}>
+                  <span>Edit name</span>
+                </Menu.Item>
+                <Menu.Item leftSection={<Trash2 size={16} />}>
+                  <span>Delete column</span>
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </div>
         </div>
-      </div>
 
-      <div className="p-2 flex flex-col gap-2">
-        {isLoading ? (
-          "loading"
-        ) : (
-          <>
-            {filteredTickets.length === 0 ? (
-              <span className="text-center italic text-gray-400">
-                No ticket found
-              </span>
+        <ScrollAreaAutosize
+          offsetScrollbars
+          scrollbarSize={6}
+          scrollHideDelay={500}
+          className="pr-0.5 h-full"
+          h={250}
+        >
+          <div className="pl-2 pr-0.5 flex flex-col gap-2">
+            {isLoading ? (
+              <div className="mt-4 flex justify-center">
+                <Loader
+                  size="sm"
+                  styles={{
+                    root: { "--loader-color": "#0e7490" },
+                  }}
+                />
+              </div>
             ) : (
-              filteredTickets.map((ticket) => (
+              filteredTickets?.map((ticket) => (
                 <WorkspaceTicket
                   ticket={ticket}
                   workspace={workspace}
@@ -57,8 +75,14 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
                 />
               ))
             )}
-          </>
-        )}
+          </div>
+        </ScrollAreaAutosize>
+
+        <div>
+          <Button radius={0} variant="transparent" fullWidth onClick={open}>
+            <Plus strokeWidth={1.8} />
+          </Button>
+        </div>
       </div>
 
       <Drawer
@@ -77,6 +101,6 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
           close={close}
         />
       </Drawer>
-    </div>
+    </>
   )
 }

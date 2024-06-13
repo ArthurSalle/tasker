@@ -9,7 +9,7 @@ export default function WorkspaceTicket({ ticket, workspace }) {
 
   return (
     <>
-      <Card padding="sm" onClick={open} className="cursor-pointer">
+      <Card padding="sm" mih={100} onClick={open} className="cursor-pointer">
         <span
           className={`absolute inset-y-0 left-0 w-2 ${getPriorityColor(
             ticket.ticket_priority

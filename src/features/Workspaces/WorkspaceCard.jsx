@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ActionIcon, Card, Input, Menu } from "@mantine/core"
+import { ActionIcon, Card, Input, Menu, ScrollArea } from "@mantine/core"
 import { EllipsisVertical } from "lucide-react"
 import { Trash2 } from "lucide-react"
 import { editWorkspaceName, getWorkspacesColumns } from "../../api/workspaces"
@@ -10,6 +10,7 @@ import { Check } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { CirclePlus } from "lucide-react"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
@@ -69,7 +70,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
         padding="md"
         radius="sm"
         withBorder
-        h={400}
+        h={450}
       >
         <div className="flex items-center justify-between">
           {editMode ? (
@@ -132,20 +133,33 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           </Menu>
         </div>
 
-        <div className="flex items-center gap-4 p-2 h-full overflow-x-auto">
-          {isLoading
-            ? "loading"
-            : columns?.map((column) => {
-                return (
-                  <WorkspaceColumns
-                    column={column}
-                    key={column.id}
-                    workspace={workspace}
-                    isSuccess={isColumnSuccess}
-                  />
-                )
-              })}
-        </div>
+        <ScrollArea
+          scrollbars="x"
+          offsetScrollbars
+          scrollbarSize={6}
+          scrollHideDelay={500}
+        >
+          <div className="flex gap-4 p-2 h-full overflow-x-auto">
+            {isLoading
+              ? "loading"
+              : columns?.map((column) => {
+                  return (
+                    <WorkspaceColumns
+                      column={column}
+                      key={column.id}
+                      workspace={workspace}
+                      isSuccess={isColumnSuccess}
+                    />
+                  )
+                })}
+
+            <div className="p-3 flex items-center border-2 border-dashed border-cyan-300 rounded bg-cyan-700 bg-opacity-10 cursor-pointer">
+              <ActionIcon variant="transparent" disabled>
+                <CirclePlus size={30} strokeWidth={1.8} />
+              </ActionIcon>
+            </div>
+          </div>
+        </ScrollArea>
       </Card>
     </div>
   )
