@@ -34,10 +34,14 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item leftSection={<Pencil size={16} />}>
+                <Menu.Item leftSection={<Pencil size={16} />} disabled>
                   <span>Edit name</span>
                 </Menu.Item>
-                <Menu.Item leftSection={<Trash2 size={16} />} color="red">
+                <Menu.Item
+                  leftSection={<Trash2 size={16} />}
+                  color="red"
+                  disabled
+                >
                   <span>Delete column</span>
                 </Menu.Item>
               </Menu.Dropdown>

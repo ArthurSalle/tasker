@@ -1,6 +1,7 @@
 import TimeAgo from "javascript-time-ago"
 
 export const modalTitleStyles = "!text-xl !font-medium"
+export const warningModalTitleStyles = "!text-xl !font-medium text-red-500"
 export const drawerTitleStyles = "!text-2xl !font-semibold"
 
 export function capitalizeFirstLetter(word) {

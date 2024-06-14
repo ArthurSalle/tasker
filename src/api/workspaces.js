@@ -4,7 +4,26 @@ export const getWorkspaces = async () => {
   const { data } = await supabase
     .from("workspaces")
     .select()
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
+  return data
+}
+
+export const createWorkspace = async (workspace) => {
+  const { data } = await supabase
+    .from("workspaces")
+    .insert(workspace)
+    .select()
+    .single()
+  return data
+}
+
+export const deleteWorkspace = async (workspace_id) => {
+  const { data } = await supabase
+    .from("workspaces")
+    .delete()
+    .eq("id", workspace_id)
+    .select()
+    .single()
   return data
 }
 
