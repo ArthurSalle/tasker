@@ -1,14 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  Button,
-  Card,
-  Input,
-  Loader,
-  Menu,
-  Modal,
-  ScrollArea,
-  Text,
-} from "@mantine/core"
+import { Card, Input, Loader, Menu, ScrollArea } from "@mantine/core"
 import {
   createWorkspaceColumn,
   deleteWorkspace,
@@ -17,18 +8,13 @@ import {
 } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { useState } from "react"
-import {
-  Pencil,
-  Trash2,
-  EllipsisVertical,
-  Columns,
-  TriangleAlert,
-} from "lucide-react"
+import { Pencil, Trash2, EllipsisVertical, Columns } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { mockDelay, warningModalTitleStyles } from "../../utils/helpers"
+import { mockDelay } from "../../utils/helpers"
 import { useClickOutside, useDisclosure, useWindowScroll } from "@mantine/hooks"
+import WarningModal from "../../components/WarningModal"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
@@ -222,43 +208,14 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
         </Card>
       </div>
 
-      <Modal.Root opened={isOpen} onClose={close} centered>
-        <Modal.Overlay />
-        <Modal.Content>
-          <Modal.Header>
-            <Modal.Title
-              classNames={{
-                title: warningModalTitleStyles,
-              }}
-            >
-              <div className="flex items-center gap-2">
-                <TriangleAlert strokeWidth={1.8} />
-                Warning
-              </div>
-            </Modal.Title>
-            <Modal.CloseButton />
-          </Modal.Header>
-          <Modal.Body>
-            <Text fw={500}>
-              If you delete your workspace, everything in it will be deleted.
-            </Text>
-
-            <div className="flex items-center gap-2 justify-end mt-4">
-              <Button variant="light" color="#000" onClick={close}>
-                Cancel
-              </Button>
-              <Button
-                variant="outline"
-                color="red"
-                onClick={deleteWorkspaceMutation}
-                loading={isPendingDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+      <WarningModal
+        content="If you delete your workspace, 
+        everything in it will be deleted."
+        isOpen={isOpen}
+        close={close}
+        onConfirm={deleteWorkspaceMutation}
+        isLoading={isPendingDelete}
+      />
     </>
   )
 }
