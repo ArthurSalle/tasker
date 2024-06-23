@@ -27,6 +27,17 @@ export const deleteWorkspace = async (workspace_id) => {
   return data
 }
 
+export const editWorkspaceName = async (workspace, workspace_name) => {
+  const { data } = await supabase
+    .from("workspaces")
+    .update({ ...workspace, ...workspace_name })
+    .eq("id", workspace.id)
+    .select()
+    .single()
+
+  return data
+}
+
 export const getWorkspacesColumns = async (workspace_id) => {
   const { data } = await supabase
     .from("workspaces_columns")
@@ -46,6 +57,26 @@ export const createWorkspaceColumn = async (column) => {
   return data
 }
 
+export const editColumnName = async (column, column_name) => {
+  const { data } = await supabase
+    .from("workspaces_columns")
+    .update({ ...column, ...column_name })
+    .eq("id", column.id)
+    .select()
+    .single()
+  return data
+}
+
+export const deleteWorkspaceColumn = async (column) => {
+  const { data } = await supabase
+    .from("workspaces_columns")
+    .delete()
+    .eq("id", column.id)
+    .select()
+    .single()
+  return data
+}
+
 export const getWorkspacesTickets = async (workspace_id, column_id) => {
   const { data } = await supabase
     .from("tickets")
@@ -54,17 +85,6 @@ export const getWorkspacesTickets = async (workspace_id, column_id) => {
     .order("created_at", { ascending: true })
 
   return data?.filter((ticket) => ticket.column_id === column_id)
-}
-
-export const editWorkspaceName = async (workspace, workspace_name) => {
-  const { data } = await supabase
-    .from("workspaces")
-    .update({ ...workspace, ...workspace_name })
-    .eq("id", workspace.id)
-    .select()
-    .single()
-
-  return data
 }
 
 export const editTicket = async (editedTicket) => {

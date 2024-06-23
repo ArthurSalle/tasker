@@ -1,19 +1,50 @@
 import { Button, Drawer, Loader, Menu, ScrollAreaAutosize } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Plus, EllipsisVertical, Trash2 } from "lucide-react"
-import { getWorkspacesTickets } from "../../api/workspaces"
+import {
+  deleteWorkspaceColumn,
+  getWorkspacesTickets,
+} from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
 import { capitalizeFirstLetter, drawerTitleStyles } from "../../utils/helpers"
 import { CreateTicketDrawer } from "./CreateTicketDrawer"
+import WarningModal from "../../components/WarningModal"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
-  const [opened, { open, close }] = useDisclosure(false)
+  const [isDrawerOpen, { open: openDrawer, close: closeDrawer }] =
+    useDisclosure(false)
+  const [
+    isWarningModalOpen,
+    { open: openWarningModal, close: closeWarningModal },
+  ] = useDisclosure(false)
+  const queryClient = useQueryClient()
 
   const { data: tickets, isLoading } = useQuery({
     queryKey: ["get_tickets", workspace.id, column.id],
     queryFn: () => getWorkspacesTickets(workspace.id, column.id),
     enabled: isSuccess,
+  })
+
+  const { mutate: deleteColumn, isPending: isPendingDelete } = useMutation({
+    mutationFn: () => {
+      return deleteWorkspaceColumn(column)
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ["get_workspaces_columns", workspace.id],
+        (oldData) => {
+          return oldData.filter((column) => column.id !== data.id)
+        }
+      )
+      closeWarningModal()
+    },
+  })
+
+  const { mutate: editColumnName } = useMutation({
+    mutationFn: () => {
+      console.log(column)
+    },
   })
 
   return (
@@ -34,13 +65,16 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item leftSection={<Pencil size={16} />} disabled>
+                <Menu.Item
+                  leftSection={<Pencil size={16} />}
+                  onClick={editColumnName}
+                >
                   <span>Edit name</span>
                 </Menu.Item>
                 <Menu.Item
                   leftSection={<Trash2 size={16} />}
                   color="red"
-                  disabled
+                  onClick={openWarningModal}
                 >
                   <span>Delete column</span>
                 </Menu.Item>
@@ -83,15 +117,15 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
           variant="transparent"
           color="#000"
           fullWidth
-          onClick={open}
+          onClick={openDrawer}
         >
           <Plus strokeWidth={1.8} />
         </Button>
       </div>
 
       <Drawer
-        opened={opened}
-        onClose={close}
+        opened={isDrawerOpen}
+        onClose={closeDrawer}
         title="Create a new ticket"
         size={"33%"}
         position="right"
@@ -102,9 +136,18 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         <CreateTicketDrawer
           workspace={workspace}
           column={column}
-          close={close}
+          close={closeDrawer}
         />
       </Drawer>
+
+      <WarningModal
+        content="If you delete this column, 
+        every tickets in it will be deleted."
+        isOpen={isWarningModalOpen}
+        close={closeWarningModal}
+        onConfirm={deleteColumn}
+        isLoading={isPendingDelete}
+      />
     </>
   )
 }
