@@ -60,7 +60,7 @@ export const createWorkspaceColumn = async (column) => {
 export const editColumnName = async (column, column_name) => {
   const { data } = await supabase
     .from("workspaces_columns")
-    .update({ ...column, ...column_name })
+    .update({ ...column, column_name: column_name })
     .eq("id", column.id)
     .select()
     .single()

@@ -1,15 +1,27 @@
-import { Button, Drawer, Loader, Menu, ScrollAreaAutosize } from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
+import {
+  Button,
+  Drawer,
+  Input,
+  Loader,
+  Menu,
+  ScrollAreaAutosize,
+} from "@mantine/core"
+import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Plus, EllipsisVertical, Trash2 } from "lucide-react"
 import {
   deleteWorkspaceColumn,
+  editColumnName,
   getWorkspacesTickets,
 } from "../../api/workspaces"
 import WorkspaceTicket from "./WorkspaceTicket"
-import { capitalizeFirstLetter, drawerTitleStyles } from "../../utils/helpers"
+import { drawerTitleStyles } from "../../utils/helpers"
 import { CreateTicketDrawer } from "./CreateTicketDrawer"
 import WarningModal from "../../components/WarningModal"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   const [isDrawerOpen, { open: openDrawer, close: closeDrawer }] =
@@ -19,6 +31,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
     { open: openWarningModal, close: closeWarningModal },
   ] = useDisclosure(false)
   const queryClient = useQueryClient()
+  const [isEditMode, setEditMode] = useState(false)
 
   const { data: tickets, isLoading } = useQuery({
     queryKey: ["get_tickets", workspace.id, column.id],
@@ -41,10 +54,49 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
     },
   })
 
-  const { mutate: editColumnName } = useMutation({
-    mutationFn: () => {
-      console.log(column)
+  function handleEdit() {
+    setEditMode((prev) => !prev)
+  }
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    resolver: zodResolver(
+      z.object({
+        column_name: z.string().min(2, {
+          message: "Column name should be at least 2 characters",
+        }),
+      })
+    ),
+    defaultValues: {
+      column_name: column.column_name,
     },
+  })
+  const columnValue = getValues("column_name")
+
+  const { mutate: editColumnNameMutation } = useMutation({
+    mutationFn: () => {
+      if (column.column_name === columnValue) {
+        setEditMode(false)
+        return
+      }
+      return editColumnName(column, columnValue)
+    },
+    onSuccess: async (data) => {
+      setEditMode(false)
+      await queryClient.setQueryData(["get_workspaces_columns"], (oldData) => {
+        return oldData.map((item) => {
+          return item.id === data.id ? data : item
+        })
+      })
+    },
+  })
+
+  const ref = useClickOutside(() => {
+    handleSubmit(editColumnNameMutation)()
   })
 
   return (
@@ -54,9 +106,24 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         className="border-2  rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-gray-100 relative"
       >
         <div className="flex items-center justify-between border-b p-2">
-          <span className="text-lg font-semibold">
-            {capitalizeFirstLetter(column.column_name)}
-          </span>
+          <div ref={ref}>
+            <Input
+              readOnly={!isEditMode}
+              autoFocus
+              type="text"
+              variant="unstyled"
+              className={`border-b font-semibold  p-0 ${
+                isEditMode ? "" : "border-transparent"
+              }`}
+              styles={{
+                wrapper: { "--input-fz": "18px" },
+              }}
+              {...register("column_name")}
+            />
+            <span className="text-xs text-red-500">
+              {errors?.column_name?.message}
+            </span>
+          </div>
 
           <div className="flex items-center gap-2">
             <Menu position="bottom-end">
@@ -67,7 +134,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
               <Menu.Dropdown>
                 <Menu.Item
                   leftSection={<Pencil size={16} />}
-                  onClick={editColumnName}
+                  onClick={handleEdit}
                 >
                   <span>Edit name</span>
                 </Menu.Item>
