@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
-  ActionIcon,
   Button,
   Card,
   Input,
@@ -18,22 +17,24 @@ import {
 } from "../../api/workspaces"
 import WorkspaceColumns from "./WorkspaceColumns"
 import { useState } from "react"
-import { Check, Pencil, Trash2, EllipsisVertical, Columns } from "lucide-react"
+import {
+  Pencil,
+  Trash2,
+  EllipsisVertical,
+  Columns,
+  TriangleAlert,
+} from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import {
-  capitalizeFirstLetter,
-  mockDelay,
-  warningModalTitleStyles,
-} from "../../utils/helpers"
-import { useDisclosure } from "@mantine/hooks"
-import { TriangleAlert } from "lucide-react"
+import { mockDelay, warningModalTitleStyles } from "../../utils/helpers"
+import { useClickOutside, useDisclosure, useWindowScroll } from "@mantine/hooks"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
   const [editMode, setEditMode] = useState(false)
   const [isOpen, { open, close }] = useDisclosure(false)
+  const [scroll, scrollTo] = useWindowScroll()
 
   const {
     data: columns,
@@ -41,7 +42,12 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     isSuccess: isColumnSuccess,
   } = useQuery({
     queryKey: ["get_workspaces_columns", workspace.id],
-    queryFn: () => getWorkspacesColumns(workspace.id),
+    queryFn: () => {
+      if (scroll != 0) {
+        scrollTo({ y: 0 })
+      }
+      return getWorkspacesColumns(workspace.id)
+    },
     enabled: isSuccess,
   })
 
@@ -53,6 +59,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm({
     resolver: zodResolver(
       z.object({
@@ -66,17 +73,23 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     },
   })
 
+  const workspaceValue = getValues("workspace_name")
+
   const { mutate } = useMutation({
     mutationFn: (workspace_name) => {
+      if (workspace.workspace_name === workspaceValue) {
+        setEditMode(false)
+        return
+      }
       return editWorkspaceName(workspace, workspace_name)
     },
     onSuccess: async (data) => {
+      setEditMode(false)
       await queryClient.setQueryData(["get_workspaces"], (oldData) => {
         return oldData.map((item) => {
           return item.id === data.id ? data : item
         })
       })
-      handleEdit()
     },
   })
 
@@ -108,6 +121,11 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
       )
     },
   })
+
+  const ref = useClickOutside(() => {
+    handleSubmit(mutate)()
+  })
+
   return (
     <>
       <div className="py-8 flex flex-col gap-4">
@@ -119,42 +137,24 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           withBorder
         >
           <div className="flex items-center justify-between">
-            {editMode ? (
-              <form
-                onSubmit={handleSubmit(mutate)}
-                className="flex items-center gap-2"
-              >
-                <div>
-                  <Input
-                    type="text"
-                    variant="unstyled"
-                    className="border-b font-semibold p-0"
-                    autoFocus
-                    styles={{
-                      wrapper: { "--input-fz": "20px" },
-                    }}
-                    {...register("workspace_name")}
-                  />
-                  <span className="text-xs text-red-500">
-                    {errors?.workspace_name?.message}
-                  </span>
-                </div>
-
-                <ActionIcon type="submit">
-                  <Check size={18} />
-                </ActionIcon>
-              </form>
-            ) : (
+            <div ref={ref}>
               <Input
-                readOnly
-                className="font-semibold border-b border-transparent"
-                value={capitalizeFirstLetter(workspace.workspace_name)}
+                readOnly={!editMode}
+                autoFocus
+                type="text"
                 variant="unstyled"
+                className={`border-b font-semibold p-0 ${
+                  editMode ? "" : "border-transparent"
+                }`}
                 styles={{
                   wrapper: { "--input-fz": "20px" },
                 }}
+                {...register("workspace_name")}
               />
-            )}
+              <span className="text-xs text-red-500">
+                {errors?.workspace_name?.message}
+              </span>
+            </div>
 
             <Menu position="bottom-end">
               <Menu.Target>
