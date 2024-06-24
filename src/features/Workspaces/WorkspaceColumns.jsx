@@ -1,11 +1,4 @@
-import {
-  Button,
-  Drawer,
-  Input,
-  Loader,
-  Menu,
-  ScrollAreaAutosize,
-} from "@mantine/core"
+import { Button, Drawer, Loader, Menu, ScrollAreaAutosize } from "@mantine/core"
 import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Plus, EllipsisVertical, Trash2 } from "lucide-react"
@@ -22,6 +15,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import EditableTitle from "../../components/EditableTitle"
 
 export default function WorkspaceColumns({ column, workspace, isSuccess }) {
   const [isDrawerOpen, { open: openDrawer, close: closeDrawer }] =
@@ -63,6 +57,7 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
     handleSubmit,
     formState: { errors },
     getValues,
+    resetField,
   } = useForm({
     resolver: zodResolver(
       z.object({
@@ -86,17 +81,21 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
       return editColumnName(column, columnValue)
     },
     onSuccess: async (data) => {
+      await queryClient.setQueryData(
+        ["get_workspaces_columns", workspace.id],
+        (oldData) => {
+          return oldData.map((item) => {
+            return item.id === data.id ? data : item
+          })
+        }
+      )
       setEditMode(false)
-      await queryClient.setQueryData(["get_workspaces_columns"], (oldData) => {
-        return oldData.map((item) => {
-          return item.id === data.id ? data : item
-        })
-      })
     },
   })
 
-  const ref = useClickOutside(() => {
-    handleSubmit(editColumnNameMutation)()
+  const inputRef = useClickOutside(() => {
+    setEditMode(false)
+    resetField("column_name")
   })
 
   return (
@@ -106,24 +105,15 @@ export default function WorkspaceColumns({ column, workspace, isSuccess }) {
         className="border-2  rounded min-w-80 max-w-80 w-full h-full flex flex-col overflow-y-hidden bg-gray-100 relative"
       >
         <div className="flex items-center justify-between border-b p-2">
-          <div ref={ref}>
-            <Input
-              readOnly={!isEditMode}
-              autoFocus
-              type="text"
-              variant="unstyled"
-              className={`border-b font-semibold  p-0 ${
-                isEditMode ? "" : "border-transparent"
-              }`}
-              styles={{
-                wrapper: { "--input-fz": "18px" },
-              }}
-              {...register("column_name")}
-            />
-            <span className="text-xs text-red-500">
-              {errors?.column_name?.message}
-            </span>
-          </div>
+          <EditableTitle
+            isEditMode={isEditMode}
+            titleValue={column.column_name}
+            actions={{ ...register("column_name") }}
+            onSubmit={handleSubmit(editColumnNameMutation)}
+            errorMsg={errors?.column_name?.message}
+            inputRef={inputRef}
+            fontSize={18}
+          />
 
           <div className="flex items-center gap-2">
             <Menu position="bottom-end">

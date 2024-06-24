@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Card, Input, Loader, Menu, ScrollArea } from "@mantine/core"
+import { Card, Loader, Menu, ScrollArea } from "@mantine/core"
 import {
   createWorkspaceColumn,
   deleteWorkspace,
@@ -13,14 +13,17 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { mockDelay } from "../../utils/helpers"
-import { useClickOutside, useDisclosure, useWindowScroll } from "@mantine/hooks"
+import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import WarningModal from "../../components/WarningModal"
+import EditableTitle from "../../components/EditableTitle"
 
 export default function WorkspaceCard({ workspace, isSuccess }) {
   const queryClient = useQueryClient()
-  const [editMode, setEditMode] = useState(false)
-  const [isOpen, { open, close }] = useDisclosure(false)
-  const [scroll, scrollTo] = useWindowScroll()
+  const [isEditMode, setEditMode] = useState(false)
+  const [
+    isWarningModalOpen,
+    { open: openWarningModal, close: closeWarningModal },
+  ] = useDisclosure(false)
 
   const {
     data: columns,
@@ -29,9 +32,6 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
   } = useQuery({
     queryKey: ["get_workspaces_columns", workspace.id],
     queryFn: () => {
-      if (scroll != 0) {
-        scrollTo({ y: 0 })
-      }
       return getWorkspacesColumns(workspace.id)
     },
     enabled: isSuccess,
@@ -46,6 +46,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     handleSubmit,
     formState: { errors },
     getValues,
+    resetField,
   } = useForm({
     resolver: zodResolver(
       z.object({
@@ -70,12 +71,12 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
       return editWorkspaceName(workspace, workspace_name)
     },
     onSuccess: async (data) => {
-      setEditMode(false)
       await queryClient.setQueryData(["get_workspaces"], (oldData) => {
         return oldData.map((item) => {
           return item.id === data.id ? data : item
         })
       })
+      setEditMode(false)
     },
   })
 
@@ -108,8 +109,9 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
     },
   })
 
-  const ref = useClickOutside(() => {
-    handleSubmit(mutate)()
+  const inputRef = useClickOutside(() => {
+    setEditMode(false)
+    resetField("workspace_name")
   })
 
   return (
@@ -123,24 +125,15 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
           withBorder
         >
           <div className="flex items-center justify-between">
-            <div ref={ref}>
-              <Input
-                readOnly={!editMode}
-                autoFocus
-                type="text"
-                variant="unstyled"
-                className={`border-b font-semibold p-0 ${
-                  editMode ? "" : "border-transparent"
-                }`}
-                styles={{
-                  wrapper: { "--input-fz": "20px" },
-                }}
-                {...register("workspace_name")}
-              />
-              <span className="text-xs text-red-500">
-                {errors?.workspace_name?.message}
-              </span>
-            </div>
+            <EditableTitle
+              isEditMode={isEditMode}
+              titleValue={workspace.workspace_name}
+              actions={{ ...register("workspace_name") }}
+              onSubmit={handleSubmit(mutate)}
+              errorMsg={errors?.workspace_name?.message}
+              inputRef={inputRef}
+              fontSize={20}
+            />
 
             <Menu position="bottom-end">
               <Menu.Target>
@@ -167,7 +160,7 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
                 <Menu.Item
                   leftSection={<Trash2 size={16} />}
                   color="red"
-                  onClick={open}
+                  onClick={openWarningModal}
                 >
                   <span>Delete workspace</span>
                 </Menu.Item>
@@ -211,8 +204,8 @@ export default function WorkspaceCard({ workspace, isSuccess }) {
       <WarningModal
         content="If you delete your workspace, 
         everything in it will be deleted."
-        isOpen={isOpen}
-        close={close}
+        isOpen={isWarningModalOpen}
+        close={closeWarningModal}
         onConfirm={deleteWorkspaceMutation}
         isLoading={isPendingDelete}
       />
