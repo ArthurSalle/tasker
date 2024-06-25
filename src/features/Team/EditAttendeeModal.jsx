@@ -2,13 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Select } from "@mantine/core"
 import { Controller, useForm } from "react-hook-form"
 import { schema } from "./helpers/schema"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { deleteAttendee, editAttendee } from "../../api/attendees"
 import { capitalizeFirstLetter } from "../../utils/helpers"
+import { invalidateAttendeesQuery } from "./hooks/useGetAttendees"
 
 export default function EditAttendeeModal({ attendee }) {
-  const queryClient = useQueryClient()
-
   const {
     register,
     control,
@@ -30,24 +29,14 @@ export default function EditAttendeeModal({ attendee }) {
       const finaleAttendee = { ...attendee, ...editedAttendee }
       await editAttendee(finaleAttendee)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
-    },
+    onSuccess: () => invalidateAttendeesQuery(),
   })
 
   const { mutate: mutateDelete, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       await deleteAttendee(attendee)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
-    },
+    onSuccess: () => invalidateAttendeesQuery(),
   })
 
   return (

@@ -5,3 +5,5 @@ export function getFullname(firstname, lastname) {
     capitalizeFirstLetter(firstname) + " " + capitalizeFirstLetter(lastname)
   )
 }
+
+export const getAttendeesKey = "get_attendees"

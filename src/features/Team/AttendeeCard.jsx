@@ -10,7 +10,7 @@ import {
 } from "../../utils/helpers"
 
 export default function AttendeeCard({ attendee }) {
-  const [opened, { open, close }] = useDisclosure(false)
+  const [isOpen, { open, close }] = useDisclosure(false)
 
   return (
     <>
@@ -42,12 +42,6 @@ export default function AttendeeCard({ attendee }) {
             <span className="text-lg font-medium">
               {getFullname(attendee.firstname, attendee.lastname)}
             </span>
-            {/* <Pen
-              size={18}
-              strokeWidth={1.8}
-              onClick={open}
-              className="cursor-pointer"
-            /> */}
           </div>
 
           <div className="flex items-center gap-1 text-gray-500">
@@ -60,7 +54,7 @@ export default function AttendeeCard({ attendee }) {
       </Card>
 
       <Modal
-        opened={opened}
+        opened={isOpen}
         onClose={close}
         title="Edit member"
         centered

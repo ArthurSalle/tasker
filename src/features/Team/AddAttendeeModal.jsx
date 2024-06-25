@@ -1,13 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { postAttendee } from "../../api/attendees"
 import { Button, Input, Select } from "@mantine/core"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { schema } from "./helpers/schema"
+import { invalidateAttendeesQuery } from "./hooks/useGetAttendees"
 
 export default function AttendeeModal() {
-  const queryClient = useQueryClient()
-
   const {
     register,
     control,
@@ -24,12 +23,7 @@ export default function AttendeeModal() {
 
       await postAttendee(attendee)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["get_attendees"],
-        refetchType: "all",
-      })
-    },
+    onSuccess: () => invalidateAttendeesQuery(),
   })
 
   return (
